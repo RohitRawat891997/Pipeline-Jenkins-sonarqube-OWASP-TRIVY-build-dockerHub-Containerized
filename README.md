@@ -217,29 +217,41 @@ pipeline{
 
 # 📊 CI/CD Workflow
 ```
-   +------------------+
-   |   Source Code     |
-   +------------------+
-            |
-            v
-   +------------------+
-   |   Jenkins CI/CD   |
-   |   (Build & Test)  |
-   +------------------+
-            |
-     +------+------+
-     |             |
-     v             v
-+----------+   +---------+
-| SonarQube |   |  Trivy |
-| Code QC   |   | Scan   |
-+----------+   +---------+
-     \             /
-      \           /
-       v         v
+ +--------------------+
+|   Source Code      |
+|   (GitHub Repo)    |
++--------------------+
+           |
+           v
++--------------------+
+|   Jenkins CI/CD    |
+|  (Build & Test)    |
++--------------------+
+           |
+   +-------+--------+--------+
+   |       |        |        |
+   v       v        v        v
++----------+ +---------------+ +---------+
+| SonarQube| | OWASP Dep.    | |  Trivy  |
+| Quality  | | Check         | | Vulner- |
+| Analysis | | (Dependencies)| | ability |
+| & Code   | | Scan          | | Scan    |
+| Check    | +---------------+ +---------+
++----------+        |           |
+           \        |           /
+            \       |          /
+             v      v         v
+       +----------------+
+       | Docker Build & |
+       | Deployment     |
+       +----------------+
+           |
+           v
     +------------------+
-    |   Docker Images   |
-    | / Deployment      |
+    |  Application     |
+    |  Containerized   |
+    |  & Running       |
     +------------------+
+
 
 ```
