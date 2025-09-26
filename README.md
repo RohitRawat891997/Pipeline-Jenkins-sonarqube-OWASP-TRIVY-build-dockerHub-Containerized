@@ -1,207 +1,202 @@
-Here are your **step-by-step notes** from the commands you shared. I’ve organized them in a clear order for Laravel project setup on Ubuntu:
+# CI/CD Pipeline with Jenkins, SonarQube, Trivy & Docker
+
+![Jenkins](https://img.shields.io/badge/Jenkins-Automation-red?logo=jenkins&logoColor=white)
+![SonarQube](https://img.shields.io/badge/SonarQube-Code%20Quality-blue?logo=sonarqube&logoColor=white)
+![Trivy](https://img.shields.io/badge/Trivy-Security%20Scanner-orange?logo=aqua&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.2-777bb4?logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
 
 ---
 
-# 📘 Notes: Laravel Deployment on Ubuntu
+This project demonstrates how to set up a complete CI/CD pipeline using **Jenkins**, **SonarQube**, **Trivy**, and **Docker**.  
+It automates **code analysis**, **security scanning**, and **deployment of a containerized Laravel application**.
 
-## 1. System Update & Essentials
+---
 
+## 🚀 Features
+- SonarQube integration for static code analysis
+- Trivy for container and filesystem vulnerability scanning
+- Docker & Docker Compose for containerized deployment
+- Jenkins pipeline automation
+- Laravel application running inside PHP-Apache container with MySQL backend
+
+---
+
+## 🛠️ Prerequisites
+Ensure your system has the following installed:
+
+- **Ubuntu 20.04+ / Debian-based system**
+- **Docker & Docker Compose**
+- **Java (OpenJDK 21)**
+- **Jenkins**
+- **Trivy**
+- **SonarQube**
+
+---
+
+## ⚙️ Installation Steps
+
+### 1. Install Docker
 ```bash
-sudo apt update && sudo apt upgrade -y
-sudo apt install apache2 -y
-systemctl start apache2
-sudo apt install curl unzip git -y
-```
-
----
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+2. Install Trivy
+bash
+Copy code
+sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/trivy.list
+sudo apt-get update
+sudo apt-get install -y trivy
+3. Install and Run SonarQube
+bash
+Copy code
+docker run -itd --name sonarqube -p 9000:9000 sonarqube:lts-community
+Access SonarQube at: http://localhost:9000
+
+4. Install Java (OpenJDK 21)
+bash
+Copy code
+sudo apt update
+sudo apt install -y fontconfig openjdk-21-jre
+java -version
+5. Install Jenkins
+bash
+Copy code
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" \
+  | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt update
+sudo apt install -y jenkins
+6. Configure Jenkins
+Install Plugins:
+
+SonarQube Scanner for Jenkins
+
+Sonar Quality Gates Plugin
+
+Pipeline: Stage View Plugin
+
+Configure SonarQube in Jenkins (Manage Jenkins → Configure System)
+
+Configure Sonar Scanner tool in Jenkins (Manage Jenkins → Global Tool Configuration)
+
+7. Permissions & Docker Access
+bash
+Copy code
+sudo usermod -aG docker jenkins
+sudo usermod -aG docker $USER
+
+sudo systemctl restart docker
+sudo systemctl restart jenkins
+Update sudoers file:
+
+bash
+Copy code
+sudo visudo
+Add:
+
+ruby
+Copy code
+jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
+🏗️ Jenkins Pipeline
+Use the following Jenkins pipeline (Jenkinsfile style):
+
+groovy
+Copy code
+pipeline {
+    agent any
+    environment {
+        SONAR_HOME = tool "Sonar"
+    }
+    stages {
+        stage("Clone Code from GitHub") {
+            steps {
+                git url: "https://github.com/RohitRawat891997/Pipeline-Jenkins-sonarqube-OWASP-TRIVY-build-dockerHub-Containerized.git", branch: "main"
+            }
+        }
+        stage("SonarQube Quality Analysis") {
+            steps {
+                withSonarQubeEnv("Sonar") {
+                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
+                }
+            }
+        }
+        stage("Sonar Quality Gate Scan") {
+            steps {
+                timeout(time: 2, unit: "MINUTES") {
+                    waitForQualityGate abortPipeline: false
+                }
+            }
+        }
+        stage("Trivy File System Scan") {
+            steps {
+                sh "trivy fs --format table -o trivy-fs-report.html ."
+            }
+        }
+        stage("Deploy using Docker Compose") {
+            steps {
+                sh "docker compose up --build -d"
+            }
+        }
+    }
+}
+🐳 Docker Setup
+Dockerfile
+Uses PHP 8.2 with Apache
 
-## 2. Install Database & PHP
-
-```bash
-sudo apt install mysql-server -y
-sudo apt install -y php
-sudo apt install php-xml php-zip php-gd php-mbstring php-curl php-mysql -y
-```
+Installs Composer, Node.js, Laravel dependencies
 
----
+Configures Apache for Laravel
 
-## 3. Install Composer
+docker-compose.yml
+Defines two services:
 
-```bash
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-sudo mv composer.phar /usr/local/bin/composer
-composer -v
-```
+app → Laravel application (PHP + Apache)
 
----
+mysql → MySQL 8.0 database with persistent volume
 
-## 4. Clone Laravel Project
+📂 Project Structure
+css
+Copy code
+├── Dockerfile
+├── docker-compose.yml
+├── laravel.conf
+├── Jenkinsfile (inside Jenkins pipeline)
+├── src/ (Laravel application code)
+📊 Reports
+SonarQube → Code Quality Dashboard
 
-```bash
-cd /var/www
-git clone https://github.com/RohitRawat891997/testing_18.git
-cd testing_18/
-composer install
-chmod -R 777 /var/www/testing_18/
-```
+Trivy → Vulnerability reports (trivy-fs-report.html)
 
----
+Jenkins → Build & Pipeline Visualization
 
-## 5. Configure Apache for Laravel
+🌐 Access
+Laravel App → http://localhost:80
 
-```bash
-ls -ltrh /etc/apache2/sites-available/
-rm -rf /etc/apache2/sites-available/*
-vim /etc/apache2/sites-available/laravel.conf
+SonarQube → http://localhost:9000
 
-<VirtualHost *:80>
-ServerName localhost
-DocumentRoot  /var/www/testing_18/public
-<Directory /var/www/testing_18/public>
+Jenkins → http://localhost:8080
 
-AllowOverride All
-Require all granted
-</Directory>
+✅ Summary
+This project sets up a CI/CD pipeline where:
 
-ErrorLog ${APACHE_LOG_DIR}/localhost_error.log
-CustomLog ${APACHE_LOG_DIR}/localhost_access.log combined
-</VirtualHost>
+Code is cloned from GitHub
 
-:wq!
+Analyzed using SonarQube
 
-a2ensite laravel.conf
-systemctl restart apache2
-a2enmod rewrite
-sudo systemctl restart apache2
-```
+Scanned for vulnerabilities using Trivy
 
----
-
-## 6. Laravel Commands
-
-```bash
-php artisan optimize:clear
-php artisan key:generate
-php artisan optimize
-php artisan migrate
-```
-
----
-
-## 7. Configure MySQL for Laravel
-
-```sql
-mysql -u root -p
--- Inside MySQL/MariaDB shell
-CREATE USER 'laraveluser'@'localhost' IDENTIFIED BY 'your_secure_password';
-GRANT ALL PRIVILEGES ON *.* TO 'laraveluser'@'localhost';
-FLUSH PRIVILEGES;
-exit
-```
-
----
-
-## 8. Update Laravel `.env` File
-
-```ini
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=db_test
-DB_USERNAME=laraveluser
-DB_PASSWORD=your_secure_password
-```
-
-```bash
-php artisan config:clear
-php artisan config:cache
-```
-
----
-
-## 9. Frontend Build (if using Vue/React)
-
-```bash
-npm install
-npm run build
-npm run dev
-```
-
----
-
-👉 These notes cover **full environment setup, database config, Apache setup, and Laravel deployment**.
-
-Do you also want me to create a **sample laravel.conf file** for Apache (step 5), so you can directly copy-paste it?
-
-
-
-
-
-
-
-
-
-
-
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Deployed with Docker Compose
