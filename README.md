@@ -145,7 +145,8 @@ pipeline{
 }
 ```
 
-📊 CI/CD Workflow
+# 📊 CI/CD Workflow
+```
    +------------------+
    |   Source Code     |
    +------------------+
@@ -170,3 +171,5 @@ pipeline{
     |   Docker Images   |
     | / Deployment      |
     +------------------+
+
+```
