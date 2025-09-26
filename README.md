@@ -89,7 +89,9 @@ sudo systemctl restart jenkins
 # 9️⃣ Configure Sudoers for Jenkins
 ```
 sudo visudo
-Add:
+```
+#### Add:
+```
 jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
 ```
 
