@@ -1,48 +1,23 @@
-🚀 CI/CD Pipeline with Jenkins, SonarQube, Trivy & Docker
-
-
-
-
-
-
-
-
+🚀 CI/CD Pipeline Project
+<p align="center"> <img src="https://img.shields.io/badge/CI%2FCD-Pipeline-blue?style=for-the-badge&logo=jenkins&logoColor=white" /> <img src="https://img.shields.io/badge/Jenkins-Automation-red?style=for-the-badge&logo=jenkins&logoColor=white" /> <img src="https://img.shields.io/badge/SonarQube-Code%20Quality-blue?style=for-the-badge&logo=sonarqube&logoColor=white" /> <img src="https://img.shields.io/badge/Trivy-Security-orange?style=for-the-badge&logo=aqua&logoColor=white" /> <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white" /> <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" /> </p>
 📖 Overview
 
-This project demonstrates a complete CI/CD pipeline for a Laravel application using:
+A complete CI/CD pipeline for a Laravel application featuring:
 
-Jenkins → CI/CD automation
-
-SonarQube → Code quality & static analysis
-
-Trivy → Security vulnerability scanning
-
-Docker & Compose → Containerized deployment
+✅ Jenkins – CI/CD automation
+✅ SonarQube – Code quality analysis
+✅ Trivy – Security scanning
+✅ Docker Compose – Containerized deployment
+✅ MySQL – Database backend
 
 🛠️ Tech Stack
-
-Backend: PHP 8.2 (Laravel-ready)
-
-Database: MySQL 8.0
-
-Tools: Jenkins, SonarQube, Trivy
-
-Infra: Docker, Docker Compose
-
+<p align="center"> <img src="https://skillicons.dev/icons?i=php,laravel,mysql,jenkins,docker,sonarqube,github,linux" /> </p>
 ⚙️ Setup Guide
-1️⃣ Install Docker
+🔹 Install Docker
 sudo apt-get update
-sudo apt-get install -y ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
- https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
- | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install -y docker-ce docker-compose-plugin
 
-2️⃣ Install Trivy
+🔹 Install Trivy
 sudo apt-get install -y wget apt-transport-https gnupg lsb-release
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
 echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main \
@@ -50,46 +25,20 @@ echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main \
 sudo apt-get update
 sudo apt-get install -y trivy
 
-3️⃣ Run SonarQube
+🔹 Run SonarQube
 docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
 
 
-🔗 Access: http://localhost:9000
+👉 Access: http://localhost:9000
 
-4️⃣ Install Java (OpenJDK 21)
-sudo apt update
-sudo apt install -y fontconfig openjdk-21-jre
-java -version
-
-5️⃣ Install Jenkins
-sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" \
- | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt update
+🔹 Install Jenkins
+sudo apt install -y openjdk-21-jre
 sudo apt install -y jenkins
 
 
-🔗 Access: http://localhost:8080
+👉 Access: http://localhost:8080
 
-🔧 Jenkins Configuration
-
-Install Plugins:
-✅ SonarQube Scanner
-✅ Sonar Quality Gates
-✅ Pipeline: Stage View
-
-Add Jenkins to Docker group:
-
-sudo usermod -aG docker jenkins
-sudo usermod -aG docker $USER
-sudo systemctl restart docker jenkins
-
-
-Update sudoers:
-
-jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
-
-🏗️ Pipeline (Jenkinsfile)
+🏗️ Jenkins Pipeline
 pipeline {
     agent any
     environment {
@@ -128,29 +77,13 @@ pipeline {
     }
 }
 
-🐳 Docker Setup
-
-Dockerfile Highlights
-
-PHP 8.2 + Apache
-
-Composer + Node.js
-
-Configured for Laravel
-
-docker-compose.yml Highlights
-
-app → Laravel application container
-
-mysql → MySQL 8.0 with persistent volume
-
 📊 Reports
 
-SonarQube → Code quality dashboard
+SonarQube Dashboard – Code quality & bugs
 
-Trivy → Vulnerability report (trivy-fs-report.html)
+Trivy Report – Vulnerabilities (trivy-fs-report.html)
 
-Jenkins → Pipeline execution & build results
+Jenkins UI – Pipeline execution
 
 🌍 Access Points
 
