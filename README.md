@@ -2,13 +2,13 @@
 
 This project demonstrates setting up a full CI/CD environment on Ubuntu using Docker, Jenkins, SonarQube, and Trivy for automated build, code quality checks, and vulnerability scanning.
 
-🚀 Prerequisites
+# 🚀 Prerequisites
 
 Ubuntu 22.04+
 
 sudo privileges
 
-1️⃣ Install Docker
+# 1️⃣ Install Docker
 ```
 sudo apt-get update
 sudo apt-get install ca-certificates curl -y
@@ -39,9 +39,10 @@ docker run -itd --name sonarqube -p 9000:9000 sonarqube:lts-community
 
 Access: http://localhost:9000
 
-Default credentials: admin / admin
+Default credentials: admin / admin123
 
 # 4️⃣ Install Java
+```
 sudo apt update
 sudo apt install fontconfig openjdk-21-jre -y
 java -version
@@ -52,20 +53,24 @@ Expected output:
 openjdk version "21.0.3"
 OpenJDK Runtime Environment (build 21.0.3+11-Debian-2)
 OpenJDK 64-Bit Server VM (build 21.0.3+11-Debian-2, mixed mode)
+```
 
 # 5️⃣ Install Jenkins
+```
 sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
 echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list
 sudo apt update
 sudo apt install jenkins -y
+```
 
 # 6️⃣ Jenkins Plugins to Install
-
+```
 SonarQube Scanner for Jenkins
 
 Sonar Quality Gates Plugin
 
 Pipeline: Stage View Plugin
+```
 
 # 7️⃣ Configure Jenkins & SonarQube
 
@@ -74,17 +79,21 @@ Configure SonarQube server in Jenkins → Manage Jenkins → Configure System
 Add SonarQube Scanner path in Jenkins → Global Tool Configuration
 
 # 8️⃣ Set Permissions
+```
 sudo usermod -aG docker jenkins
 sudo usermod -aG docker $USER
 sudo systemctl restart docker
 sudo systemctl restart jenkins
+```
 
 # 9️⃣ Configure Sudoers for Jenkins
+```
 sudo visudo
-# Add:
+Add:
 jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
+```
 
-🔧 Create & Run Pipeline
+# 🔧 Create & Run Pipeline
 
 Create a Jenkins pipeline (Declarative or Scripted)
 
@@ -93,7 +102,7 @@ Integrate SonarQube and Trivy for code quality and vulnerability scans
 Run the pipeline and monitor stages in Jenkins dashboard
 
 # ✅ References
-
+```
 Docker Docs
 
 Trivy Docs
@@ -101,3 +110,4 @@ Trivy Docs
 SonarQube Docs
 
 Jenkins Docs
+```
