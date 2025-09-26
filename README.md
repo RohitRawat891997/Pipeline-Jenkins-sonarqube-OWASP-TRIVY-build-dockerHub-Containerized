@@ -85,7 +85,8 @@ OWASP Dependency-Check
 ### Configure SonarQube server in Jenkins → Manage Jenkins → Configure System
 <img width="776" height="469" alt="image" src="https://github.com/user-attachments/assets/a593d736-a9df-48ff-a3d7-df8f60159854" />
 
-<img width="863" height="434" alt="image" src="https://github.com/user-attachments/assets/534611f4-70d5-41aa-908b-877cdc4ff8b9" />
+<img width="863" height="434" alt="image" src="https://github.com/user-attachments/assets/c506d5e6-8c95-4f08-aaa5-8514be112928" />
+
 
 
 # 8️⃣ Set Permissions
