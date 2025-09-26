@@ -2,22 +2,6 @@
 
 This project demonstrates setting up a full CI/CD environment on Ubuntu using Docker, Jenkins, SonarQube, and Trivy for automated build, code quality checks, and vulnerability scanning.
 
-#
-> [!Important]
-> Below table helps you to navigate to the particular tool installation section fast.
-
-| Tech stack    | Installation |
-| -------- | ------- |
-| Jenkins Master | <a href="#Jenkins">Install and configure Jenkins</a>     |
-| eksctl | <a href="#EKS">Install eksctl</a>     |
-| Argocd | <a href="#Argo">Install and configure ArgoCD</a>     |
-| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
-| OWASP setup | <a href="#Owasp">Install and configure OWASP</a>     |
-| SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
-| Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
-| Monitoring | <a href="#Monitor">Prometheus and grafana setup using helm charts</a>
-| Clean Up | <a href="#Clean">Clean up</a>     |
-#
 
 # 🚀 Prerequisites
 ```
