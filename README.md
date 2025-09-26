@@ -5,7 +5,8 @@ This project demonstrates setting up a full CI/CD environment on Ubuntu using Do
 # 🚀 Prerequisites
 
 Ubuntu 22.04+
-
+instance_type = t2.large 
+Storage = 30 GB
 sudo privileges
 
 # 1️⃣ Install Docker
@@ -46,10 +47,10 @@ Access: http://localhost:9000
 sudo apt update
 sudo apt install fontconfig openjdk-21-jre -y
 java -version
+```
 
-
-Expected output:
-
+#### Expected output:
+```
 openjdk version "21.0.3"
 OpenJDK Runtime Environment (build 21.0.3+11-Debian-2)
 OpenJDK 64-Bit Server VM (build 21.0.3+11-Debian-2, mixed mode)
@@ -144,13 +145,4 @@ pipeline{
 }
 ```
 
-# ✅ References
-```
-Docker Docs
 
-Trivy Docs
-
-SonarQube Docs
-
-Jenkins Docs
-```
