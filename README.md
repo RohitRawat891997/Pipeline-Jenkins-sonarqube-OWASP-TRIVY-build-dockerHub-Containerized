@@ -101,7 +101,9 @@ OWASP Dependency-Check
 
 <img width="863" height="434" alt="image" src="https://github.com/user-attachments/assets/c506d5e6-8c95-4f08-aaa5-8514be112928" />
 
-
+- <b>Login to SonarQube server, go to <mark>Administration --> Webhook</mark> and click on create </b>
+![image](https://github.com/user-attachments/assets/16527e72-6691-4fdf-a8d2-83dd27a085cb)
+![image](https://github.com/user-attachments/assets/a8b45948-766a-49a4-b779-91ac3ce0443c)
 
 # 8️⃣ Set Permissions
 ```
