@@ -23,7 +23,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 ```
 
-#### 2️⃣ Install Trivy (Vulnerability Scanner)
+# 2️⃣ Install Trivy (Vulnerability Scanner)
 ```
 sudo apt-get install wget apt-transport-https gnupg lsb-release -y
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
@@ -39,7 +39,7 @@ docker run -itd --name sonarqube -p 9000:9000 sonarqube:lts-community
 
 Access: http://localhost:9000
 
-Default credentials: admin / admin123
+#### Default credentials: admin / admin123
 
 # 4️⃣ Install Java
 ```
