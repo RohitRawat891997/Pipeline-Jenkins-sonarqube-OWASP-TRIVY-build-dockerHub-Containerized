@@ -1,136 +1,126 @@
-This project demonstrates how to set up a complete CI/CD pipeline using Jenkins, SonarQube, Trivy, and Docker.
-It automates code analysis, security scanning, and deployment of a containerized Laravel application.
+🚀 CI/CD Pipeline with Jenkins, SonarQube, Trivy & Docker
 
-🚀 Features
 
-SonarQube integration for static code analysis
 
-Trivy for container and filesystem vulnerability scanning
 
-Docker & Docker Compose for containerized deployment
 
-Jenkins pipeline automation
 
-Laravel application running inside PHP-Apache container with MySQL backend
 
-🛠️ Prerequisites
 
-Ubuntu 20.04+ / Debian-based system
+📖 Overview
 
-Docker & Docker Compose
+This project demonstrates a complete CI/CD pipeline for a Laravel application using:
 
-Java (OpenJDK 21)
+Jenkins → CI/CD automation
 
-Jenkins
+SonarQube → Code quality & static analysis
 
-Trivy
+Trivy → Security vulnerability scanning
 
-SonarQube
+Docker & Compose → Containerized deployment
 
-⚙️ Installation Steps
-1. Install Docker
+🛠️ Tech Stack
+
+Backend: PHP 8.2 (Laravel-ready)
+
+Database: MySQL 8.0
+
+Tools: Jenkins, SonarQube, Trivy
+
+Infra: Docker, Docker Compose
+
+⚙️ Setup Guide
+1️⃣ Install Docker
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+ https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+ | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-2. Install Trivy
+2️⃣ Install Trivy
 sudo apt-get install -y wget apt-transport-https gnupg lsb-release
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/trivy.list
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main \
+ | sudo tee /etc/apt/sources.list.d/trivy.list
 sudo apt-get update
 sudo apt-get install -y trivy
 
-3. Install and Run SonarQube
-docker run -itd --name sonarqube -p 9000:9000 sonarqube:lts-community
+3️⃣ Run SonarQube
+docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
 
 
-➡ Access SonarQube: http://localhost:9000
+🔗 Access: http://localhost:9000
 
-4. Install Java (OpenJDK 21)
+4️⃣ Install Java (OpenJDK 21)
 sudo apt update
 sudo apt install -y fontconfig openjdk-21-jre
 java -version
 
-5. Install Jenkins
+5️⃣ Install Jenkins
 sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
 echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" \
-  | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt update
 sudo apt install -y jenkins
 
-6. Configure Jenkins
+
+🔗 Access: http://localhost:8080
+
+🔧 Jenkins Configuration
 
 Install Plugins:
+✅ SonarQube Scanner
+✅ Sonar Quality Gates
+✅ Pipeline: Stage View
 
-SonarQube Scanner for Jenkins
+Add Jenkins to Docker group:
 
-Sonar Quality Gates Plugin
-
-Pipeline: Stage View Plugin
-
-Configure SonarQube in Jenkins (Manage Jenkins → Configure System)
-
-Configure Sonar Scanner tool (Manage Jenkins → Global Tool Configuration)
-
-7. Permissions & Docker Access
 sudo usermod -aG docker jenkins
 sudo usermod -aG docker $USER
-
-sudo systemctl restart docker
-sudo systemctl restart jenkins
+sudo systemctl restart docker jenkins
 
 
-Update sudoers file:
-
-sudo visudo
-
-
-Add:
+Update sudoers:
 
 jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
 
-🏗️ Jenkins Pipeline
+🏗️ Pipeline (Jenkinsfile)
 pipeline {
     agent any
     environment {
         SONAR_HOME = tool "Sonar"
     }
     stages {
-        stage("Clone Code from GitHub") {
+        stage("Clone Repo") {
             steps {
                 git url: "https://github.com/RohitRawat891997/Pipeline-Jenkins-sonarqube-OWASP-TRIVY-build-dockerHub-Containerized.git", branch: "main"
             }
         }
-        stage("SonarQube Quality Analysis") {
+        stage("SonarQube Analysis") {
             steps {
                 withSonarQubeEnv("Sonar") {
                     sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
                 }
             }
         }
-        stage("Sonar Quality Gate Scan") {
+        stage("Quality Gate") {
             steps {
                 timeout(time: 2, unit: "MINUTES") {
                     waitForQualityGate abortPipeline: false
                 }
             }
         }
-        stage("Trivy File System Scan") {
+        stage("Trivy Security Scan") {
             steps {
                 sh "trivy fs --format table -o trivy-fs-report.html ."
             }
         }
-        stage("Deploy using Docker Compose") {
+        stage("Deploy with Docker Compose") {
             steps {
                 sh "docker compose up --build -d"
             }
@@ -139,53 +129,37 @@ pipeline {
 }
 
 🐳 Docker Setup
-Dockerfile
 
-Uses PHP 8.2 with Apache
+Dockerfile Highlights
 
-Installs Composer, Node.js, Laravel dependencies
+PHP 8.2 + Apache
 
-Configures Apache for Laravel
+Composer + Node.js
 
-docker-compose.yml
+Configured for Laravel
 
-app → Laravel application (PHP + Apache)
+docker-compose.yml Highlights
 
-mysql → MySQL 8.0 database with persistent volume
+app → Laravel application container
 
-📂 Project Structure
-├── Dockerfile
-├── docker-compose.yml
-├── laravel.conf
-├── Jenkinsfile (inside Jenkins pipeline)
-├── src/ (Laravel application code)
+mysql → MySQL 8.0 with persistent volume
 
 📊 Reports
 
-SonarQube → Code Quality Dashboard
+SonarQube → Code quality dashboard
 
-Trivy → Vulnerability reports (trivy-fs-report.html)
+Trivy → Vulnerability report (trivy-fs-report.html)
 
-Jenkins → Build & Pipeline Visualization
+Jenkins → Pipeline execution & build results
 
-🌐 Access
+🌍 Access Points
 
-Laravel App → http://localhost:80
+Laravel App: http://localhost
 
-SonarQube → http://localhost:9000
+SonarQube: http://localhost:9000
 
-Jenkins → http://localhost:8080
+Jenkins: http://localhost:8080
 
-✅ Summary
+👨‍💻 Author
 
-This project sets up a CI/CD pipeline where:
-
-Code is cloned from GitHub
-
-Analyzed using SonarQube
-
-Scanned for vulnerabilities using Trivy
-
-Deployed with Docker Compose
-
-👨‍💻 Author: Rohit Rawat
+Rohit Rawat
