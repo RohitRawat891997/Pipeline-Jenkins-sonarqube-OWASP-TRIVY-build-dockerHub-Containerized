@@ -71,6 +71,8 @@ SonarQube Scanner for Jenkins
 Sonar Quality Gates Plugin
 
 Pipeline: Stage View Plugin
+
+OWASP Dependency-Check
 ```
 <img width="733" height="367" alt="image" src="https://github.com/user-attachments/assets/35c443af-8c41-42f5-bd90-c50075f885d4" />
 
