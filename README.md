@@ -1,14 +1,5 @@
 # CI/CD Pipeline with Jenkins, SonarQube, Trivy & Docker
 
-![Jenkins](https://img.shields.io/badge/Jenkins-Automation-red?logo=jenkins&logoColor=white)
-![SonarQube](https://img.shields.io/badge/SonarQube-Code%20Quality-blue?logo=sonarqube&logoColor=white)
-![Trivy](https://img.shields.io/badge/Trivy-Security%20Scanner-orange?logo=aqua&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker&logoColor=white)
-![PHP](https://img.shields.io/badge/PHP-8.2-777bb4?logo=php&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
-
----
-
 This project demonstrates how to set up a complete CI/CD pipeline using **Jenkins**, **SonarQube**, **Trivy**, and **Docker**.  
 It automates **code analysis**, **security scanning**, and **deployment of a containerized Laravel application**.
 
@@ -155,11 +146,8 @@ pipeline {
 }
 🐳 Docker Setup
 Dockerfile
-Uses PHP 8.2 with Apache
-
-Installs Composer, Node.js, Laravel dependencies
-
-Configures Apache for Laravel
+A PHP 8.2 with Apache & Laravel-ready container is used.
+It installs required extensions, Composer, Node, and configures Apache for Laravel.
 
 docker-compose.yml
 Defines two services:
@@ -200,3 +188,5 @@ Analyzed using SonarQube
 Scanned for vulnerabilities using Trivy
 
 Deployed with Docker Compose
+
+👨‍💻 Author: Rohit Rawat
