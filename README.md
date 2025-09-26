@@ -1,15 +1,14 @@
-DevOps CI/CD Setup with Docker, Trivy, SonarQube, and Jenkins
+# CI/CD Pipeline Setup with Docker, Jenkins, SonarQube & Trivy
 
-This project demonstrates a complete setup for a CI/CD pipeline on Ubuntu using Docker, Trivy, SonarQube, and Jenkins. The setup includes installation, configuration, and integration steps to run pipelines with security scanning and code quality analysis.
+This project demonstrates setting up a full CI/CD environment on Ubuntu using Docker, Jenkins, SonarQube, and Trivy for automated build, code quality checks, and vulnerability scanning.
 
-Prerequisites
+🚀 Prerequisites
 
-Ubuntu 22.04 or later
+Ubuntu 22.04+
 
 sudo privileges
 
-1. Install Docker
-# Update system and install prerequisites
+1️⃣ Install Docker
 sudo apt-get update
 sudo apt-get install ca-certificates curl -y
 
@@ -20,30 +19,28 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # Add Docker repository
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
-https://download.docker.com/linux/ubuntu \
-$(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
 sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
-2. Install Trivy (Vulnerability Scanner)
+# 2️⃣ Install Trivy (Vulnerability Scanner)
 sudo apt-get install wget apt-transport-https gnupg lsb-release -y
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | \
-sudo tee -a /etc/apt/sources.list.d/trivy.list
+echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
 sudo apt-get update
 sudo apt-get install trivy -y
 
-3. Install and Configure SonarQube
+# 3️⃣ Install and Configure SonarQube
 docker run -itd --name sonarqube -p 9000:9000 sonarqube:lts-community
 
 
-Access SonarQube at: http://localhost:9000
+Access: http://localhost:9000
 
-Default login credentials: admin / admin
+Default credentials: admin / admin
 
-4. Install Java
+# 4️⃣ Install Java
 sudo apt update
 sudo apt install fontconfig openjdk-21-jre -y
 java -version
@@ -51,23 +48,17 @@ java -version
 
 Expected output:
 
-openjdk version "21.0.3" 2024-04-16
+openjdk version "21.0.3"
 OpenJDK Runtime Environment (build 21.0.3+11-Debian-2)
-OpenJDK 64-Bit Server VM (build 21.0.3+11-Debian-2, mixed mode, sharing)
+OpenJDK 64-Bit Server VM (build 21.0.3+11-Debian-2, mixed mode)
 
-5. Install Jenkins
-sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
-https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-
-echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] \
-https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-
+# 5️⃣ Install Jenkins
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list
 sudo apt update
 sudo apt install jenkins -y
 
-6. Install Jenkins Plugins
-
-Install the following plugins via Jenkins Dashboard → Manage Jenkins → Manage Plugins:
+# 6️⃣ Jenkins Plugins to Install
 
 SonarQube Scanner for Jenkins
 
@@ -75,42 +66,37 @@ Sonar Quality Gates Plugin
 
 Pipeline: Stage View Plugin
 
-7. Configure Jenkins Tools for SonarQube
+# 7️⃣ Configure Jenkins & SonarQube
 
-Configure SonarQube servers under Jenkins → Manage Jenkins → Configure System.
+Configure SonarQube server in Jenkins → Manage Jenkins → Configure System
 
-Set SonarQube Scanner path in Jenkins → Global Tool Configuration.
+Add SonarQube Scanner path in Jenkins → Global Tool Configuration
 
-8. Set Permissions
-# Add Jenkins user and current user to Docker group
+# 8️⃣ Set Permissions
 sudo usermod -aG docker jenkins
 sudo usermod -aG docker $USER
-
-# Restart services
 sudo systemctl restart docker
 sudo systemctl restart jenkins
 
-9. Configure sudoers for Jenkins
+# 9️⃣ Configure Sudoers for Jenkins
 sudo visudo
-# Add the following line:
+# Add:
 jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
 
-10. Create and Run Pipeline
+🔧 Create & Run Pipeline
 
-Create a Jenkins pipeline using either Declarative or Scripted syntax.
+Create a Jenkins pipeline (Declarative or Scripted)
 
-Integrate SonarQube and Trivy for automated quality checks and vulnerability scanning.
+Integrate SonarQube and Trivy for code quality and vulnerability scans
 
-Run your pipeline and monitor stages via Jenkins dashboard.
+Run the pipeline and monitor stages in Jenkins dashboard
 
-References
+# ✅ References
 
-Docker Installation Docs
+Docker Docs
 
 Trivy Docs
 
 SonarQube Docs
 
 Jenkins Docs
-
-✅ Your system is now ready for CI/CD with Docker, Jenkins, SonarQube, and Trivy.
