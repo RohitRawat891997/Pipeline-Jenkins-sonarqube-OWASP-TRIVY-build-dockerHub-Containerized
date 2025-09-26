@@ -95,11 +95,52 @@ jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
 
 # 🔧 Create & Run Pipeline
 
-Create a Jenkins pipeline (Declarative or Scripted)
+#### Create a Jenkins pipeline (Declarative or Scripted)
 
-Integrate SonarQube and Trivy for code quality and vulnerability scans
+#### Integrate SonarQube and Trivy for code quality and vulnerability scans
 
-Run the pipeline and monitor stages in Jenkins dashboard
+#### Run the pipeline and monitor stages in Jenkins dashboard
+
+```
+pipeline{
+    agent any
+    environment{
+        SONAR_HOME= tool "Sonar"
+    }
+    stages{
+        stage("Clone Code from GitHub"){
+            steps{
+                git url: "https://github.com/RohitRawat891997/Pipeline-Jenkins-sonarqube-OWASP-TRIVY-build-dockerHub-Containerized.git", branch: "main"
+            }
+        }
+        stage("SonarQube Quality Analysis"){
+            steps{
+                withSonarQubeEnv("Sonar"){
+                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
+                }
+            }
+        }
+        
+        stage("Sonar Quality Gate Scan"){
+            steps{
+                timeout(time: 2, unit: "MINUTES"){
+                    waitForQualityGate abortPipeline: false
+                }
+            }
+        }
+        stage("Trivy File System Scan"){
+            steps{
+                sh "trivy fs --format  table -o trivy-fs-report.html ."
+            }
+        }
+        stage("Deploy using Docker compose"){
+            steps{
+                sh "docker compose up --build"
+            }
+        }
+    }
+}
+```
 
 # ✅ References
 ```
