@@ -3,12 +3,12 @@
 This project demonstrates setting up a full CI/CD environment on Ubuntu using Docker, Jenkins, SonarQube, and Trivy for automated build, code quality checks, and vulnerability scanning.
 
 # 🚀 Prerequisites
-
+```
 Ubuntu 22.04+
 instance_type = t2.large 
 Storage = 30 GB
 sudo privileges
-
+```
 # 1️⃣ Install Docker
 ```
 sudo apt-get update
