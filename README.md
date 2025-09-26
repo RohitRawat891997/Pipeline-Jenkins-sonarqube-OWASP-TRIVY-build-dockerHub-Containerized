@@ -40,7 +40,7 @@ docker run -itd --name sonarqube -p 9000:9000 sonarqube:lts-community
 
 Access: http://localhost:9000
 
-#### Default credentials: admin / admin123
+#### Default credentials: admin / admin
 
 # 4️⃣ Install Java
 ```
