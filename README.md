@@ -131,88 +131,57 @@ jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose
 #### Run the pipeline and monitor stages in Jenkins dashboard
 
 ```
-pipeline{
+pipeline {
     agent any
-    environment{
-        SONAR_HOME= tool "Sonar"
+
+    environment {
+        SONAR_HOME = tool "Sonar"
     }
-    stages{
-        stage("Clone Code from GitHub"){
-            steps{
+
+    stages {
+        stage("Clone Code from GitHub") {
+            steps {
                 git url: "https://github.com/RohitRawat891997/Pipeline-Jenkins-sonarqube-OWASP-TRIVY-build-dockerHub-Containerized.git", branch: "main"
             }
         }
-        stage("SonarQube Quality Analysis"){
-            steps{
-                withSonarQubeEnv("Sonar"){
+
+        stage("SonarQube Quality Analysis") {
+            steps {
+                withSonarQubeEnv("Sonar") {
                     sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
                 }
             }
         }
-        
-        stage("Sonar Quality Gate Scan"){
-            steps{
-                timeout(time: 2, unit: "MINUTES"){
+
+        stage("Sonar Quality Gate Scan") {
+            steps {
+                timeout(time: 2, unit: "MINUTES") {
                     waitForQualityGate abortPipeline: false
                 }
             }
         }
-pipeline{
-    agent any
-    environment{
-        SONAR_HOME= tool "Sonar"
-    }
-    stages{
-        stage("Clone Code from GitHub"){
-            steps{
-                git url: "https://github.com/RohitRawat891997/Pipeline-Jenkins-sonarqube-OWASP-TRIVY-build-dockerHub-Containerized.git", branch: "main"
-            }
-        }
-        stage("SonarQube Quality Analysis"){
-            steps{
-                withSonarQubeEnv("Sonar"){
-                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
-                }
-            }
-        }
-        
-        stage("Sonar Quality Gate Scan"){
-            steps{
-                timeout(time: 2, unit: "MINUTES"){
-                    waitForQualityGate abortPipeline: false
-                }
-            }
-        }
-        stage("OWASP Dependency Check"){
-            steps{
+
+        stage("OWASP Dependency Check") {
+            steps {
                 dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'OWASP'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage("Trivy File System Scan"){
-            steps{
-                sh "trivy fs --format  table -o trivy-fs-report.html ."
+
+        stage("Trivy File System Scan") {
+            steps {
+                sh "trivy fs --format table -o trivy-fs-report.html ."
             }
         }
-        stage("Deploy using Docker compose"){
-            steps{
+
+        stage("Deploy using Docker Compose") {
+            steps {
                 sh "docker compose up --build"
             }
         }
     }
 }
-        stage("Trivy File System Scan"){
-            steps{
-                sh "trivy fs --format  table -o trivy-fs-report.html ."
-            }
-        }
-        stage("Deploy using Docker compose"){
-            steps{
-                sh "docker compose up --build"
-            }
-        }
-    }
-}
+
 ```
 
 # 📊 CI/CD Workflow
