@@ -1,9 +1,9 @@
-🚀 DevOps CI/CD Pipeline with Jenkins, SonarQube, and Trivy
+** 🚀 DevOps CI/CD Pipeline with Jenkins, SonarQube, and Trivy
 
 A complete DevOps CI/CD pipeline setup using Jenkins, SonarQube, Docker, and Trivy for automated code quality analysis, security scanning, and containerized deployment.
 
-📋 Overview
-
+** 📋 Overview
+```
 This project sets up a robust CI/CD pipeline that includes:
 
 Jenkins → CI/CD automation server
@@ -13,6 +13,7 @@ SonarQube → Code quality & static analysis
 Trivy → Vulnerability & security scanning
 
 Docker & Docker Compose → Containerization & deployment
+```
 
 🚀 Prerequisites
 
