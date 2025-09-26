@@ -79,11 +79,12 @@ OWASP Dependency-Check
 
 # 7️⃣ Configure Jenkins & SonarQube
 
-Add SonarQube Scanner path in Jenkins → Global Tool Configuration
+### Add SonarQube Scanner path in Jenkins → Global Tool Configuration
 <img width="836" height="323" alt="image" src="https://github.com/user-attachments/assets/19dd6db7-b06d-4fba-be68-0a0afb6ab66d" />
 
-Configure SonarQube server in Jenkins → Manage Jenkins → Configure System
+### Configure SonarQube server in Jenkins → Manage Jenkins → Configure System
 <img width="776" height="469" alt="image" src="https://github.com/user-attachments/assets/a593d736-a9df-48ff-a3d7-df8f60159854" />
+
 <img width="863" height="434" alt="image" src="https://github.com/user-attachments/assets/534611f4-70d5-41aa-908b-877cdc4ff8b9" />
 
 
